@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { getOrg, logout } from './util/makeRequest';
+import { useNavigate } from 'react-router-dom';
+import { getOrg, logout, toggleMFA } from './util/makeRequest';
 
 
 export default function Dashboard() {
@@ -35,6 +35,15 @@ export default function Dashboard() {
         })
     }
 
+    const onMFAToggle = () => {
+        toggleMFA(organization.organization_id, member.member_id, !member.mfa_enrolled)
+        .then(r => r.json())
+        .then(r => {
+            window.location.reload()
+        })
+        .catch(e => console.error(e))
+    }
+
     return (
         <div className="card">
             <h1>Organization name: {organization.organization_name}</h1>
@@ -49,9 +58,15 @@ export default function Dashboard() {
             </p>
 
             <div>
-                <p></p>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <p onClick={onLogoutClicked}>Log Out</p>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+                <p style={{cursor: "pointer"}} onClick={onMFAToggle}>
+                    <u>
+                    {organization.mfa_policy === "OPTIONAL" ? 
+                    "Opt " + (member.mfa_enrolled ? "out from" : "in for") + " MFA"
+                : ""}
+                </u>
+                </p>
+                <p style={{cursor: "pointer"}} onClick={onLogoutClicked}><u>Log Out</u></p>
             </div>
         </div>
     );

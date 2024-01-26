@@ -1,31 +1,35 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react"
 import { createOrg } from "./util/makeRequest"
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { selectOrganization } from "./util/makeRequest"
 
 export default function Discovery() {
 
     const { state } = useLocation();
 
-    const {
-        discovered_organizations,
-        email_address
-    } = state
+
+    if (state && state.discovered_organizations && state.email_address) {
+        const {
+            discovered_organizations,
+            email_address
+        } = state
 
 
-    useEffect(() => {
-        localStorage.setItem("memberEmail", email_address)
-    }, [])
+        useEffect(() => {
+            localStorage.setItem("memberEmail", email_address)
+        }, [])
 
-    return (
-        <div className="card">
-            <DiscoveredOrganizationsList
-                discovered_organizations={discovered_organizations}
-            />
-            <CreateNewOrganization />
-        </div>
-    );
+        return (
+            <div className="card">
+                <DiscoveredOrganizationsList
+                    discovered_organizations={discovered_organizations}
+                />
+                <CreateNewOrganization />
+            </div>
+        );
+    } else
+        return <Navigate to={"/login"} />
 }
 
 
@@ -49,13 +53,13 @@ const DiscoveredOrganizationsList = ({ discovered_organizations }) => {
 
     const onOrganizationSelected = (organization) => {
         selectOrganization(organization.organization_id)
-        .then(r => r.json())
-        .then(r => {
-            localStorage.setItem("organizationId", r.organizationId)
-            navigate(r.redirectPath)
-        }).catch(e => {
-            console.log(e)
-        })
+            .then(r => r.json())
+            .then(r => {
+                localStorage.setItem("organizationId", r.organizationId)
+                navigate(r.redirectPath)
+            }).catch(e => {
+                console.log(e)
+            })
     }
 
     return (
@@ -65,7 +69,7 @@ const DiscoveredOrganizationsList = ({ discovered_organizations }) => {
                 <p>No existing organizations.</p>
             )}
             <ul>
-                {discovered_organizations.map(({ organization, membership, mfa_required}) => (
+                {discovered_organizations.map(({ organization, membership, mfa_required }) => (
                     <li key={organization.organization_id}>
                         <span onClick={() => onOrganizationSelected(organization, membership, mfa_required)}>{formatMembership({ organization, membership })}</span>
                     </li>

@@ -23,7 +23,7 @@ export const authCallback = async (token, stytch_token_type) =>
         }),
     })
 
-export const createOrg = async (organization_name, require_mfa) =>
+export const createOrg = async (organizationName, requireMfa) =>
     fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/api/discovery/create`, {
         method: "POST",
         credentials: 'include',
@@ -31,8 +31,8 @@ export const createOrg = async (organization_name, require_mfa) =>
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            organization_name,
-            require_mfa
+            organizationName,
+            requireMfa
         }),
     })
 
@@ -48,7 +48,7 @@ export const getOrg = async (organizationId, memberEmail) =>
         }),
     })
 
-export const authenticateMFA = async (code, orgID, memberId) =>
+export const authenticateMFA = async (code, organizationId, memberId) =>
     fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/api/mfa/authenticate`, {
         method: "POST",
         credentials: 'include',
@@ -56,12 +56,12 @@ export const authenticateMFA = async (code, orgID, memberId) =>
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            code, orgID, memberId
+            code, organizationId, memberId
         })
     })
 
 
-export const sendMFACode = async (phoneNumber, orgID, memberId) =>
+export const sendMFACode = async (phoneNumber, organizationId, memberId) =>
     fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/api/mfa/send`, {
         method: "POST",
         credentials: 'include',
@@ -69,7 +69,7 @@ export const sendMFACode = async (phoneNumber, orgID, memberId) =>
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            phoneNumber, orgID, memberId
+            phoneNumber, organizationId, memberId
         })
     })
 
@@ -85,11 +85,22 @@ export const selectOrganization = async (organizationId) =>
         })
     })
 
-    export const logout = async () =>
+export const logout = async () =>
     fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/api/auth/logout`, {
         method: "GET",
         credentials: 'include',
+    })
+
+export const toggleMFA = async (organizationId, memberId, mfaOptIn) =>
+    fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/api/mfa/update`, {
+        method: "POST",
+        credentials: 'include',
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
         },
+        body: JSON.stringify({
+            organizationId,
+            memberId,
+            mfaOptIn
+        })
     })
