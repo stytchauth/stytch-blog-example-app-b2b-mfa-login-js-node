@@ -32,24 +32,11 @@ function getIntermediateSession(req, res) {
 }
 
 function getDiscoverySessionData(req, res) {
-  const sessionJWT = req.cookies[SESSION_COOKIE];
-
-  if (sessionJWT) {
-    return {
-      sessionJWT,
-      intermediateSession: undefined,
-      isDiscovery: false,
-      error: false,
-    };
-  }
-
   const intermediateSession = req.cookies[INTERMEDIATE_SESSION_COOKIE];
   
   if (intermediateSession) {
     return {
-      sessionJWT: undefined,
       intermediateSession,
-      isDiscovery: true,
       error: false,
     };
   }
