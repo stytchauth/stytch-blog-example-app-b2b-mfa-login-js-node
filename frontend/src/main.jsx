@@ -4,21 +4,17 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import App from './App.jsx'
 import '../styles/stytch.css'
 import Login from './login.jsx';
 import Callback from './callback.jsx';
 import Discovery from './discovery.jsx';
 import Dashboard from './dashboard.jsx';
 import MFA from './smsmfa.jsx';
+import './App.css'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-  },
-  {
-    path: "/login",
     element: <Login />,
   },
   {

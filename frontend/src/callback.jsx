@@ -26,7 +26,7 @@ export default function Callback() {
                 .catch(err => {
                     console.log(err)
                     alert("Something went wrong")
-                    navigate("/login")
+                    navigate("/")
                 })
             }  
         }
