@@ -51,6 +51,7 @@ app.post("/api/discovery/start", async (req, res) => {
 
         res.status(200).json({ message: "Email sent" })
     } catch (e) {
+        console.error(e)
         res.status(500).json({ message: "Something went wrong" })
     }
 })
@@ -60,7 +61,8 @@ app.post("/api/discovery/create", async (req, res) => {
     const intermediateSession = getIntermediateSession(req, res);
 
     if (!intermediateSession) {
-        res.status(400).json({message: "Not logged in", redirectPath: "/login"})
+        console.error("User not logged in")
+        res.status(400).json({message: "Not logged in", redirectPath: "/"})
     }
     const { organizationName, requireMfa } = req.body;
 
@@ -112,7 +114,7 @@ app.post("/api/discovery/create", async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Something went wrong", redirectPath: `/login` });
+        res.status(500).json({ message: "Something went wrong", redirectPath: `/` });
     }
 })
 
@@ -122,7 +124,8 @@ app.post("/api/discovery/get-organization", async (req, res) => {
     // If no organization was sent, revoke the session and make the user log in again
     if (!organizationId || Array.isArray(organizationId)) {
         revokeSession(req, res, stytchClient)
-        res.status(500).json({ message: "No organization ID found", redirectPath: "/login" });
+        res.status(500).json({ message: "No organization ID found", redirectPath: "/" });
+        console.error("No organization ID found")
         return
     }
 
@@ -131,6 +134,7 @@ app.post("/api/discovery/get-organization", async (req, res) => {
 
         res.status(200).json({ message: "Org retrieved successfully", organization: resp.organization, member: resp.member })
     } catch (e) {
+        console.error(e)
         res.status(500).json({ message: "Something went wrong" })
     }
 })
@@ -141,13 +145,14 @@ app.post("/api/discovery/select-organization", async (req, res) => {
     const discoverySessionData = getDiscoverySessionData(req, res);
     if (discoverySessionData.error) {
         console.error("No session tokens found...");
-        res.status(400).json({ message: "No session tokens found", redirectPath: "/login" });
+        res.status(400).json({ message: "No session tokens found", redirectPath: "/" });
         return
     }
 
     const { organizationId } = req.body
 
     if (!organizationId || Array.isArray(organizationId)) {
+        console.error("No organization ID found");
         res.status(500).json({ message: "No organization ID found", redirectPath: "/discovery" });
         return
     }
@@ -173,7 +178,7 @@ app.post("/api/discovery/select-organization", async (req, res) => {
         res.status(200).json({ message: "Auth complete", redirectPath: `/dashboard`, organizationId: organization.organization_id });
         return
     } catch (error) {
-        console.error("Could not authenticate in callback", error);
+        console.error(error);
         res.status(500).json({ message: "Could not authenticate", redirectPath: "/discovery" });
     }
 })
@@ -200,7 +205,7 @@ app.post("/api/auth/callback", async (req, res) => {
 
 app.get("/api/auth/logout", async (req, res) => {
     revokeSession(req, res, stytchClient);
-    res.status(200).json({ message: "Logged out", redirectPath: "/login" })
+    res.status(200).json({ message: "Logged out", redirectPath: "/" })
 })
 
 app.post("/api/mfa/send", async (req, res) => {
@@ -216,7 +221,7 @@ app.post("/api/mfa/send", async (req, res) => {
         res.status(200).json({ message: "OTP sent", redirectPath: `/smsmfa?sent=true&org_id=${resp.organization.organization_id}&member_id=${resp.member.member_id}` })
 
     } catch (error) {
-        console.error("Could not send in callback", error);
+        console.error(error);
         res.status(200).json({ message: "Could not send OTP", redirectPath: `/discovery` })
     }
 })
@@ -225,7 +230,7 @@ app.post("/api/mfa/authenticate", async (req, res) => {
     const discoverySessionData = getDiscoverySessionData(req, res);
     if (discoverySessionData.error) {
         console.error("No session tokens found...");
-        res.status(400).json({ message: "No session tokens found", redirectPath: "/login" });
+        res.status(400).json({ message: "No session tokens found", redirectPath: "/" });
         return
     }
 
@@ -242,8 +247,7 @@ app.post("/api/mfa/authenticate", async (req, res) => {
         clearIntermediateSession(req, res);
         res.status(200).json({ message: "OTP Authentication successful", redirectPath: `/dashboard` })
     } catch (error) {
-        console.error("Could not authenticate with OTP", error);
-
+        console.error(error);
         res.status(200).json({ message: "Could not authenticate with OTP" })
     }
 })
@@ -252,7 +256,7 @@ app.post("/api/mfa/update", async (req, res) => {
     const { organizationId, memberId, mfaOptIn } = req.body
 
     if (!organizationId || Array.isArray(organizationId)) {
-        res.status(500).json({ message: "No organization ID found", redirectPath: "/login" });
+        res.status(500).json({ message: "No organization ID found", redirectPath: "/" });
         return
     }
 
@@ -265,7 +269,7 @@ app.post("/api/mfa/update", async (req, res) => {
 
         res.status(200).json({ message: "MFA opt-in updated successfully", organization: resp.organization })
     } catch (e) {
-        console.error(r)
+        console.error(e)
         res.status(500).json({ message: "Something went wrong" })
     }
 })

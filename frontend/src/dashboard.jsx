@@ -13,35 +13,36 @@ export default function Dashboard() {
         const memberEmail = localStorage.getItem("memberEmail", "")
 
         getOrg(orgId, memberEmail)
-        .then(r => r.json())
-        .then(r => {
-            if (r.message === "No org ID found") {
-                navigate(r.redirectPath)
-            }
-            console.log(r)
-            setOrganization(r.organization)
-            setMember(r.member)
-        })
+            .then(r => r.json())
+            .then(r => {
+                if (r.message === "No org ID found") {
+                    navigate(r.redirectPath)
+                }
+                console.log(r)
+                setOrganization(r.organization)
+                setMember(r.member)
+            })
     }, [])
 
     const onLogoutClicked = () => {
         logout()
-        .then(r => r.json())
-        .then(r => {
-            localStorage.removeItem("memberEmail")
-            localStorage.removeItem("organizationId")
-            console.log("logged out")
-            navigate(r.redirectPath)
-        })
+            .then(r => r.json())
+            .then(r => {
+                localStorage.removeItem("memberEmail")
+                localStorage.removeItem("organizationId")
+                console.log("logged out")
+                navigate(r.redirectPath)
+            })
     }
 
     const onMFAToggle = () => {
         toggleMFA(organization.organization_id, member.member_id, !member.mfa_enrolled)
-        .then(r => r.json())
-        .then(r => {
-            window.location.reload()
-        })
-        .catch(e => console.error(e))
+            .then(r => r.json())
+            .then(r => {
+                alert("Preference updated!")
+                window.location.reload()
+            })
+            .catch(e => console.error(e))
     }
 
     return (
@@ -58,15 +59,15 @@ export default function Dashboard() {
             </p>
 
             <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-                <p style={{cursor: "pointer"}} onClick={onMFAToggle}>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p style={{ cursor: "pointer" }} onClick={onMFAToggle}>
                     <u>
-                    {organization.mfa_policy === "OPTIONAL" ? 
-                    "Opt " + (member.mfa_enrolled ? "out from" : "in for") + " MFA"
-                : ""}
-                </u>
+                        {organization.mfa_policy === "OPTIONAL" ?
+                            "Opt " + (member.mfa_enrolled ? "out from" : "in for") + " MFA"
+                            : ""}
+                    </u>
                 </p>
-                <p style={{cursor: "pointer"}} onClick={onLogoutClicked}><u>Log Out</u></p>
+                <p style={{ cursor: "pointer" }} onClick={onLogoutClicked}><u>Log Out</u></p>
             </div>
         </div>
     );

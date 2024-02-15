@@ -15,7 +15,6 @@ export default function Discovery() {
             email_address
         } = state
 
-
         useEffect(() => {
             localStorage.setItem("memberEmail", email_address)
         }, [])
@@ -71,7 +70,7 @@ const DiscoveredOrganizationsList = ({ discovered_organizations }) => {
             <ul>
                 {discovered_organizations.map(({ organization, membership, mfa_required }) => (
                     <li key={organization.organization_id}>
-                        <span onClick={() => onOrganizationSelected(organization, membership, mfa_required)}>{formatMembership({ organization, membership })}</span>
+                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={() => onOrganizationSelected(organization, membership, mfa_required)}>{formatMembership({ organization, membership })}</span>
                     </li>
                 ))}
             </ul>
@@ -96,7 +95,7 @@ const CreateNewOrganization = () => {
             .catch(err => {
                 console.log(err)
                 alert("Something went wrong")
-                navigate("/login")
+                navigate("/")
             })
     }
     return (
