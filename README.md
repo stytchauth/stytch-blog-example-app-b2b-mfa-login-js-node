@@ -6,5 +6,6 @@ This exmaple app implements a MFA setup in a Node.js-based backend using [Stytch
  
 This example app utilizes Node.js, Express, React, and Vite. 
 
-![mga-node-gif-1](https://github.com/stytchauth/stytch-blog-example-app-b2b-mfa-login-js-node/assets/114438556/eb6be280-7233-46a4-94ec-6825243835dd)
-![mfa-node-gif-2](https://github.com/stytchauth/stytch-blog-example-app-b2b-mfa-login-js-node/assets/114438556/7e4d9770-6925-42ba-ab4c-8d894674938c)
+<img src="https://github.com/stytchauth/stytch-blog-example-app-b2b-mfa-login-js-node/assets/114438556/eb6be280-7233-46a4-94ec-6825243835dd" width="750">
+
+<img src="https://github.com/stytchauth/stytch-blog-example-app-b2b-mfa-login-js-node/assets/114438556/7e4d9770-6925-42ba-ab4c-8d894674938c" width="750">
